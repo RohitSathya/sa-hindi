@@ -21,9 +21,22 @@ def extract_video_id(url):
     regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
     match = re.match(regex, url)
     if match:
-        return match.group(1)
-    else:
-        return None
+        video_id = match.group(1)
+        # Fetch transcript from YouTube using video ID
+        try:
+            transcript = YouTubeTranscriptApi.get_transcript(video_id)
+            # Check if transcript is available and if it's in Hindi
+            if transcript:
+                for sub in transcript:
+                    if 'hi' in sub.get('language', '').lower():  # Check if language is Hindi
+                        # Translate transcript to English
+                        translated_text = ' '.join([GoogleTranslator(source='hi', target='en').translate(sub['text']) for sub in transcript])
+                        return translated_text
+            return None  # Return None if transcript is not available or not in Hindi
+        except Exception as e:
+            print(f'Error fetching transcript: {e}')
+    return None  # Return None if regex match failed or transcript fetching failed
+
 
 
 
