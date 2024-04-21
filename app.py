@@ -15,36 +15,12 @@ nltk.download('vader_lexicon')
 # Initialize the sentiment analyzer
 sia = SentimentIntensityAnalyzer()
 
-angry_words=[ 'angry', 'negative', 'annoyed', 'unhappy', 'irritated', 'sad', 'frustrated', 'depressed', 'furious', 'miserable',
-    'enraged', 'melancholy', 'infuriated', 'despondent', 'incensed', 'downcast', 'mad', 'despairing', 'livid', 'desperate',
-    'irate', 'gloomy', 'agitated', 'sorrowful', 'outraged', 'dejected', 'exasperated', 'heartbroken', 'resentful', 'crestfallen',
-    'bitter', 'woeful', 'hostile', 'woebegone', 'sore', 'forlorn', 'indignant', 'blue', 'vexed', 'disheartened', 'wretched',
-    'riled', 'lugubrious', 'incandescent', 'glum', 'wrathful', 'cheerless', 'aggravated', 'disconsolate', 'cross', 'bitter',
-    'low', 'hostile', 'morose', 'sullen', 'dismal', 'tetchy', 'down', 'surly', 'sad', 'grouchy', 'depressed', 'cranky',
-    'miserable', 'choleric', 'dejected', 'moody', 'downhearted', 'huffy', 'heartbroken', 'petulant', 'crestfallen', 'querulous',
-    'forlorn', 'cantankerous', 'blue', 'ill-tempered', 'vexed', 'hot-tempered', 'disheartened', 'short-tempered', 'wretched',
-    'bad-tempered', 'glum', 'snarling', 'lugubrious', 'splenetic', 'incensed', 'vinegary', 'crabby', 'crotchety', 'grumpy',
-    'tetchy', 'surly', 'miserable', 'cranky', 'grouchy', 'melancholy', 'choleric', 'huffish', 'gloomy', 'irritable',
-    'miserable', 'peevish', 'downcast', 'snappy', 'chagrined', 'touchy', 'crushed', 'miffed', 'humiliated', 'peeved',
-    'mortified', 'displeased', 'perturbed', 'ashamed', 'pissed off', 'guilty', 'crushed', 'remorseful', 'sullen', 'abashed',
-    'vexed', 'embarrassed', 'riled', 'chagrined', 'indignant', 'disturbed', 'miffed', 'angry', 'peeved', 'disappointed',
-    'crabby', 'dissatisfied', 'grumpy', 'unsatisfied', 'tetchy', 'unfulfilled', 'peevish', 'unsuccessful', 'cranky', 'disheartening',
-    'frustrating', 'discouraging', 'exasperating', 'demoralizing', 'irritating', 'deflating', 'vexing', 'crushing', 'aggravating',
-    'humbling', 'annoying', 'defeated', 'bothersome', 'beaten', 'troublesome', 'dispirited', 'problematic', 'demoralized',
-    'challenging', 'broken', 'difficult', 'crushed', 'hard', 'crumbled', 'tough', 'shattered', 'painful', 'devastated',
-    'unpleasant', 'ruined', 'discomforting', 'destroyed', 'distressing', 'torn', 'unsettling', 'frustrating', 'perturbing',
-    'exasperating', 'upsetting', 'irritating', 'worrying', 'troubling', 'concerning', 'alarming', 'frightening', 'scary',
-    'terrifying', 'horrible', 'awful', 'dreadful', 'dire', 'bleak',
-    'violent', 'attack', 'terrorist', 'bloodshed', 'assault', 'gunfire', 'bombing', 'warfare', 'battle', 'explosion', 'hostility',
-    'threat', 'extremist', 'militant', 'insurgent', 'radical', 'dangerous', 'menacing', 'destructive', 'fatal', 'murderous',
-    'deadly', 'harmful', 'violent', 'brutal', 'aggressive', 'lethal', 'ruthless', 'fatal', 'horror', 'massacre', 'atrocity',
-    'catastrophe', 'tragedy', 'slaughter', 'carnage', 'mayhem', 'destruction', 'chaos', 'panic', 'suffering', 'terror', 'crisis',
-    'emergency', 'injury', 'death', 'devastation', 'cataclysm', 'bomb', 'attack', 'ambush', 'siege', 'offensive', 'hijack',
-    'kidnap', 'capture', 'behead', 'assassinate', 'gun', 'fire', 'grenade', 'explode', 'kill', 'murder', 'maim', 'wound',
-    'shoot', 'stab', 'rape', 'torture', 'scream', 'fear', 'shock', 'danger', 'threat', 'explosive', 'suspicious', 'radical',
-    'insurgent', 'militant', 'extremist', 'terrorist', 'violence', 'attack', 'war', 'battle', 'combat', 'explosion', 'bombing',
-    'conflict', 'struggle', 'fight', 'hostility', 'invasion', 'siege', 'ambush', 'insurgency', 'guerrilla', 'atrocity', 'massacre',
-    'carnage', 'bloodshed', 'terror', 'horror', 'chaos', 'panic', 'destruction', 'mayhem', 'casualty', 'injury', 'death']
+aw=[]
+with open('words.txt', 'r') as file:
+    angry_w = file.read().splitlines()
+    aw=angry_w
+    print(aw)
+
 def extract_video_id(url):
     regex = r"(?:https?:\/\/)?(?:www\.)?(?:youtube\.com\/(?:[^\/\n\s]+\/\S+\/|(?:v|e(?:mbed)?)\/|\S*?[?&]v=)|youtu\.be\/)([a-zA-Z0-9_-]{11})"
     match = re.match(regex, url)
@@ -121,10 +97,14 @@ def analyze():
         # Determine sentiment label based on compound score
         if scores['compound'] >= 0.2:
             sentiment = 'Positive'
+            for word in translated_text.lower().split():
+                if word in aw:
+                    angry_word_count += 1
+                    angry_words_list.append(word)
         elif scores['compound'] <= -0.05:
             sentiment = 'Negative'
             for word in translated_text.lower().split():
-                if word in angry_words:
+                if word in aw:
                     angry_word_count += 1
                     angry_words_list.append(word)
 
@@ -134,42 +114,15 @@ def analyze():
 
         else:
             sentiment = 'Neutral'
+            for word in translated_text.lower().split():
+                if word in aw:
+                    angry_word_count += 1
+                    angry_words_list.append(word)
 
 
         # Count angry words
         words = translated_text.split()
-        angry_word_count = sum(1 for word in words if word.lower() in [
-    'angry', 'negative', 'annoyed', 'unhappy', 'irritated', 'sad', 'frustrated', 'depressed', 'furious', 'miserable',
-    'enraged', 'melancholy', 'infuriated', 'despondent', 'incensed', 'downcast', 'mad', 'despairing', 'livid', 'desperate',
-    'irate', 'gloomy', 'agitated', 'sorrowful', 'outraged', 'dejected', 'exasperated', 'heartbroken', 'resentful', 'crestfallen',
-    'bitter', 'woeful', 'hostile', 'woebegone', 'sore', 'forlorn', 'indignant', 'blue', 'vexed', 'disheartened', 'wretched',
-    'riled', 'lugubrious', 'incandescent', 'glum', 'wrathful', 'cheerless', 'aggravated', 'disconsolate', 'cross', 'bitter',
-    'low', 'hostile', 'morose', 'sullen', 'dismal', 'tetchy', 'down', 'surly', 'sad', 'grouchy', 'depressed', 'cranky',
-    'miserable', 'choleric', 'dejected', 'moody', 'downhearted', 'huffy', 'heartbroken', 'petulant', 'crestfallen', 'querulous',
-    'forlorn', 'cantankerous', 'blue', 'ill-tempered', 'vexed', 'hot-tempered', 'disheartened', 'short-tempered', 'wretched',
-    'bad-tempered', 'glum', 'snarling', 'lugubrious', 'splenetic', 'incensed', 'vinegary', 'crabby', 'crotchety', 'grumpy',
-    'tetchy', 'surly', 'miserable', 'cranky', 'grouchy', 'melancholy', 'choleric', 'huffish', 'gloomy', 'irritable',
-    'miserable', 'peevish', 'downcast', 'snappy', 'chagrined', 'touchy', 'crushed', 'miffed', 'humiliated', 'peeved',
-    'mortified', 'displeased', 'perturbed', 'ashamed', 'pissed off', 'guilty', 'crushed', 'remorseful', 'sullen', 'abashed',
-    'vexed', 'embarrassed', 'riled', 'chagrined', 'indignant', 'disturbed', 'miffed', 'angry', 'peeved', 'disappointed',
-    'crabby', 'dissatisfied', 'grumpy', 'unsatisfied', 'tetchy', 'unfulfilled', 'peevish', 'unsuccessful', 'cranky', 'disheartening',
-    'frustrating', 'discouraging', 'exasperating', 'demoralizing', 'irritating', 'deflating', 'vexing', 'crushing', 'aggravating',
-    'humbling', 'annoying', 'defeated', 'bothersome', 'beaten', 'troublesome', 'dispirited', 'problematic', 'demoralized',
-    'challenging', 'broken', 'difficult', 'crushed', 'hard', 'crumbled', 'tough', 'shattered', 'painful', 'devastated',
-    'unpleasant', 'ruined', 'discomforting', 'destroyed', 'distressing', 'torn', 'unsettling', 'frustrating', 'perturbing',
-    'exasperating', 'upsetting', 'irritating', 'worrying', 'troubling', 'concerning', 'alarming', 'frightening', 'scary',
-    'terrifying', 'horrible', 'awful', 'dreadful', 'dire', 'bleak',
-    'violent', 'attack', 'terrorist', 'bloodshed', 'assault', 'gunfire', 'bombing', 'warfare', 'battle', 'explosion', 'hostility',
-    'threat', 'extremist', 'militant', 'insurgent', 'radical', 'dangerous', 'menacing', 'destructive', 'fatal', 'murderous',
-    'deadly', 'harmful', 'violent', 'brutal', 'aggressive', 'lethal', 'ruthless', 'fatal', 'horror', 'massacre', 'atrocity',
-    'catastrophe', 'tragedy', 'slaughter', 'carnage', 'mayhem', 'destruction', 'chaos', 'panic', 'suffering', 'terror', 'crisis',
-    'emergency', 'injury', 'death', 'devastation', 'cataclysm', 'bomb', 'attack', 'ambush', 'siege', 'offensive', 'hijack',
-    'kidnap', 'capture', 'behead', 'assassinate', 'gun', 'fire', 'grenade', 'explode', 'kill', 'murder', 'maim', 'wound',
-    'shoot', 'stab', 'rape', 'torture', 'scream', 'fear', 'shock', 'danger', 'threat', 'explosive', 'suspicious', 'radical',
-    'insurgent', 'militant', 'extremist', 'terrorist', 'violence', 'attack', 'war', 'battle', 'combat', 'explosion', 'bombing',
-    'conflict', 'struggle', 'fight', 'hostility', 'invasion', 'siege', 'ambush', 'insurgency', 'guerrilla', 'atrocity', 'massacre',
-    'carnage', 'bloodshed', 'terror', 'horror', 'chaos', 'panic', 'destruction', 'mayhem', 'casualty', 'injury', 'death'
-])
+        angry_word_count = sum(1 for word in words if word.lower() in aw)
 
         # Construct result dictionary
         result = {
