@@ -99,6 +99,10 @@
         <div class="result">
             <div><strong>भावना:</strong> {{ result.sentiment }}</div>
             <div><strong>रोषीय शब्द गिनती:</strong> {{ result.angry_word_count }}</div>
+             <p>Positive: {{ result['Positive'] }}</p>
+        <p>Negative: {{ result['Negative'] }}</p>
+        <p>Neutral: {{ result['Neutral'] }}</p>
+         <p>Compound: {{ result['Compound'] }}</p>
             {% if result.angry_words %}
             <div class="angry-words">
                 <strong>रोषीय शब्द:</strong>
