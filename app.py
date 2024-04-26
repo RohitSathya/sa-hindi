@@ -101,7 +101,7 @@ def analyze():
                 if word in aw:
                     angry_word_count += 1
                     angry_words_list.append(word)
-        elif scores['compound'] <= -0.02:
+        elif scores['compound'] <= -0.05:
             sentiment = 'Negative'
             for word in translated_text.lower().split():
                 if word in aw:
